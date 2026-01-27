@@ -57,6 +57,8 @@ end
 %combine datetimes with magnetic field values (divide by 1000 to get uTs)
 magneticfield = [num2cell(time(:)),num2cell(XYZ(:,1)/1000),num2cell(XYZ(:,2)/1000),num2cell(XYZ(:,3)/1000)];
 
+% want it in Teslas, rotation matrix to get into body frame
+
 %save time + magnetic field to .mat file
 matObj = matfile('MagField.mat')
 save('MagField.mat','magneticfield')
@@ -162,11 +164,16 @@ end
 
 %combine datetimes with magnetic field values (divide by 1000 to get uTs)
 magneticfieldbody = [num2cell(time(:)),num2cell(mag_body(:,1)/1000),num2cell(mag_body(:,2)/1000),num2cell(mag_body(:,3)/1000)];
+magneticfieldbodyteslas = [num2cell(time(:)),num2cell(mag_body(:,1)/1000),num2cell(mag_body(:,2)/1000),num2cell(mag_body(:,3)/1e9)];
 
 %save time + body frame magnetic field to .mat file
 matObjBody = matfile('MagFieldBody.mat')
 save('MagFieldBody.mat','magneticfieldbody')
 
+
+%save time + body frame magnetic field to .mat file
+matObjBodyTeslas = matfile('MagFieldBodyTeslas.mat')
+save('MagFieldBodyTeslas.mat','magneticfieldbody')
 
 
 
