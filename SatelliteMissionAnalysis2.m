@@ -9,8 +9,8 @@ clear
 clc
 close all
 %jsonData = read_json_arrays('C:\Users\ronak\OneDrive\Documents\MAVERIC\Sgp4Prop\SampleCode\Python\DriverExamples\Sgp4Prop\output\LatLonHeight.json');
-jsonData = read_json_arrays('C:\Users\ronak\OneDrive\Documents\MAVERIC\Old_pc\Sgp4Prop\SampleCode\Python\DriverExamples\Sgp4Prop\output\LatLonHeight.json');
-jsonData2 = read_json_arrays('C:\Users\ronak\OneDrive\Documents\MAVERIC\Old_pc\Sgp4Prop\SampleCode\Python\DriverExamples\Sgp4Prop\output\OscState.json');
+jsonData = read_json_arrays('C:\Users\Zargai\MATLAB\Projects\magnetorquer_control\output\LatLonHeight.json');
+jsonData2 = read_json_arrays('C:\Users\Zargai\MATLAB\Projects\magnetorquer_control\output\OscState.json');
 height = [jsonData.HT_KM_];
 latitude = [jsonData.LAT_DEG_];
 longitude = [jsonData.LON_DEG_];
@@ -160,7 +160,6 @@ for i = 1:N
     %Convert Inertial → Body using rotation matrices
     mag_body(i,:) = (R * mag_eci(i,:)')'; 
 end
-
 
 %combine datetimes with magnetic field values (divide by 1000 to get uTs)
 magneticfieldbody = [num2cell(time(:)),num2cell(mag_body(:,1)/1000),num2cell(mag_body(:,2)/1000),num2cell(mag_body(:,3)/1000)];
@@ -465,3 +464,23 @@ sat.Visual3DModel = "SmallSat.glb";
 %try changing periapsis and true anomaly
 %or to try simply defining a satellite using the position output data
 %}
+
+Ixx = 30469883.00/1000000;
+Iyy = 60061378.64/1000000;
+Izz = 67624489.73/1000000;
+Ixy = -107508.48/1000000;
+Iyz = -163163.91/1000000;
+Izx = 692935.27/1000000;
+
+Ib = [Ixx Ixy Izx;
+    Ixy Iyy Iyz;
+    Izx Iyz Izz];
+
+x0 = [1; 1; 1];
+dx0 = [1; 1; 1];
+
+% Create new mag_eci_T from nT to T
+
+mag_eci_T = mag_eci/1e9;
+time_seconds = (0:k-1) * dt;
+mag_eci_T_time_data = timeseries(mag_eci_T, time_seconds);
