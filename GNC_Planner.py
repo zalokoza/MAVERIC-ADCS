@@ -23,7 +23,9 @@ class GNCPlanner:
             '011': 'finepointing', '100': 'lvlh', '101': 'targettracking',
             '110': 'sunspin', '111': 'manual'
         }
-        return mode_map.get(mode_bits, 'safe')
+        TUMB = str(STAT)[11:12]
+        SUN = str(STAT)[13:14]
+        return mode_map.get(mode_bits, 'safe'), TUMB, SUN
     
     def plan_and_execute(self, telemetry):
         """
@@ -34,7 +36,7 @@ class GNCPlanner:
 
         # Logic for Mode Transitions
         omega_norm = telemetry.get('omega_norm', 0.0) #Check Variable and units
-        current_mode = self.mode_interp(telemetry)
+        current_mode, TUMB, SUN = self.mode_interp(telemetry)
         expected_mode = telemetry.get('adcs_planner_mode', 0.0) #Check Variable
         now = time.time()
         
@@ -89,10 +91,10 @@ class GNCPlanner:
 
         elif self.current_mode == "detumble":
             # Requirement: omega_norm < 5.0 for 300s
-            if omega_norm < 5.0:
+            if TUMB == 0.0 and SUN == 1.0:
                 if self.wait_start_time is None:
                     self.wait_start_time = now
-                elif now - self.wait_start_time >= 300:
+                elif now - self.wait_start_time >= 5:
                     self.driver.sunpoint()
                     expected_mode = 'sunpoint'
                     self.wait_start_time = None
