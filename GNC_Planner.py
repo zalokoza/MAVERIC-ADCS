@@ -95,10 +95,10 @@ class GNCPlanner:
                 if self.wait_start_time is None:
                     self.wait_start_time = now
                 elif now - self.wait_start_time >= 5:
-                    self.driver.sunpoint()
-                    expected_mode = 'sunpoint'
+                    self.driver.sunspin()
+                    expected_mode = 'sunspin'
                     self.wait_start_time = None
 
-        elif self.current_mode == "sunpoint":
+        elif self.current_mode == "sunspin":
 
             return self.current_mode
